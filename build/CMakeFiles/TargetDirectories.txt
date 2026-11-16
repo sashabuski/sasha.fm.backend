@@ -1,0 +1,3 @@
+C:/Users/sasha/source/repos/desktop_music_player/sasha_fm_broadcaster/build/CMakeFiles/sasha_fm_broadcaster.dir
+C:/Users/sasha/source/repos/desktop_music_player/sasha_fm_broadcaster/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/sasha/source/repos/desktop_music_player/sasha_fm_broadcaster/build/CMakeFiles/ZERO_CHECK.dir

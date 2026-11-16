@@ -1,0 +1,10 @@
+^C:\USERS\SASHA\SOURCE\REPOS\DESKTOP_MUSIC_PLAYER\SASHA_FM_BROADCASTER\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/sasha/source/repos/desktop_music_player/sasha_fm_broadcaster -BC:/Users/sasha/source/repos/desktop_music_player/sasha_fm_broadcaster/build --check-stamp-file C:/Users/sasha/source/repos/desktop_music_player/sasha_fm_broadcaster/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

@@ -1,0 +1,39 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ALL_BUILD", "ALL_BUILD.vcxproj", "{2578201C-F04B-3783-9DB9-EFF385457947}"
+	ProjectSection(ProjectDependencies) = postProject
+		{87AFAC37-8A93-3BD6-850B-3064E4DBE933} = {87AFAC37-8A93-3BD6-850B-3064E4DBE933}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ZERO_CHECK", "ZERO_CHECK.vcxproj", "{87AFAC37-8A93-3BD6-850B-3064E4DBE933}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+		MinSizeRel|x64 = MinSizeRel|x64
+		RelWithDebInfo|x64 = RelWithDebInfo|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2578201C-F04B-3783-9DB9-EFF385457947}.Debug|x64.ActiveCfg = Debug|x64
+		{2578201C-F04B-3783-9DB9-EFF385457947}.Release|x64.ActiveCfg = Release|x64
+		{2578201C-F04B-3783-9DB9-EFF385457947}.MinSizeRel|x64.ActiveCfg = MinSizeRel|x64
+		{2578201C-F04B-3783-9DB9-EFF385457947}.RelWithDebInfo|x64.ActiveCfg = RelWithDebInfo|x64
+		{87AFAC37-8A93-3BD6-850B-3064E4DBE933}.Debug|x64.ActiveCfg = Debug|x64
+		{87AFAC37-8A93-3BD6-850B-3064E4DBE933}.Debug|x64.Build.0 = Debug|x64
+		{87AFAC37-8A93-3BD6-850B-3064E4DBE933}.Release|x64.ActiveCfg = Release|x64
+		{87AFAC37-8A93-3BD6-850B-3064E4DBE933}.Release|x64.Build.0 = Release|x64
+		{87AFAC37-8A93-3BD6-850B-3064E4DBE933}.MinSizeRel|x64.ActiveCfg = MinSizeRel|x64
+		{87AFAC37-8A93-3BD6-850B-3064E4DBE933}.MinSizeRel|x64.Build.0 = MinSizeRel|x64
+		{87AFAC37-8A93-3BD6-850B-3064E4DBE933}.RelWithDebInfo|x64.ActiveCfg = RelWithDebInfo|x64
+		{87AFAC37-8A93-3BD6-850B-3064E4DBE933}.RelWithDebInfo|x64.Build.0 = RelWithDebInfo|x64
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C1846FBF-BFCE-36AA-93FB-3EC7A821AF03}
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

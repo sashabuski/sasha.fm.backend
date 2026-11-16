@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\CMakeFiles\d2dea0148b9edd76ccb9649abc31242f\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{1C9193F6-BF1E-3BEA-9D98-A1258AA4FC1D}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src\audio\wasapi_capture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src\audio\process_capture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src\sources\source_manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src\processing\audio_processor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src\streaming\broadcaster.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{B919FBD6-1A22-3554-84EF-34FA56D7266E}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
