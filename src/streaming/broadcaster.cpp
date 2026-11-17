@@ -1,15 +1,20 @@
+
 #include "broadcaster.h"
 
 #include <Windows.h>
 #include <winhttp.h>
 
 #include <livekit/livekit.h>
+#include <livekit/track.h>
+#include <livekit/audio_frame.h>
+
 #include <nlohmann/json.hpp>
 
 #include <exception>
 #include <iostream>
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
 #pragma comment(lib, "winhttp.lib")
@@ -273,8 +278,104 @@ namespace SashaFM
         }
     }
 
+    bool Broadcaster::startAudioPublishing()
+    {
+        if (!connected_ || !room_)
+        {
+            std::cerr << "Cannot publish audio: not connected to LiveKit.\n";
+            return false;
+        }
+
+        if (audioTrack_)
+            return true;
+
+        try
+        {
+            auto participant = room_->localParticipant().lock();
+
+            if (!participant)
+            {
+                std::cerr << "Could not access the local participant.\n";
+                return false;
+            }
+
+            audioSource_ = std::make_shared<livekit::AudioSource>(
+                48000,
+                2,
+                0
+            );
+
+            audioTrack_ = participant->publishAudioTrack(
+                "sasha-fm-audio",
+                audioSource_,
+                livekit::TrackSource::SOURCE_UNKNOWN
+            );
+
+            if (!audioTrack_)
+            {
+                std::cerr << "LiveKit did not create the audio track.\n";
+                audioSource_.reset();
+                return false;
+            }
+
+            std::cout << "LiveKit audio track published.\n";
+            return true;
+        }
+        catch (const std::exception& error)
+        {
+            std::cerr << "Audio publishing error: "
+                      << error.what() << '\n';
+
+            audioTrack_.reset();
+            audioSource_.reset();
+            return false;
+        }
+    }
+
+    bool Broadcaster::publishAudioFrame(
+        std::vector<std::int16_t> samples
+    )
+    {
+        if (!audioSource_ || !audioTrack_)
+            return false;
+
+        // A 10 ms frame at 48 kHz stereo contains
+        // 480 samples per channel, or 960 interleaved samples.
+        if (samples.size() != 960)
+            return false;
+
+        try
+        {
+            livekit::AudioFrame frame(
+                std::move(samples),
+                48000,
+                2,
+                480
+            );
+
+            audioSource_->captureFrame(frame, 20);
+            return true;
+        }
+        catch (const std::exception& error)
+        {
+            std::cerr << "Could not publish audio frame: "
+                      << error.what() << '\n';
+            return false;
+        }
+    }
+
+    void Broadcaster::stopAudioPublishing()
+    {
+        audioTrack_.reset();
+        audioSource_.reset();
+
+        std::cout << "Audio publishing stopped.\n";
+    }
+
     void Broadcaster::disconnect()
     {
+        stopAudioPublishing();
+
         if (room_)
         {
             if (connected_)
@@ -290,5 +391,10 @@ namespace SashaFM
     bool Broadcaster::isConnected() const noexcept
     {
         return connected_;
+    }
+
+    bool Broadcaster::isAudioPublished() const noexcept
+    {
+        return audioTrack_ != nullptr;
     }
 }

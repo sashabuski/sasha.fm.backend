@@ -10,7 +10,14 @@
 #include <cstdint>
 #include <cwchar>
 #include <cmath>
-
+#include <array>
+#include <algorithm>
+#include <condition_variable>
+#include <deque>
+#include <mutex>
+#include <thread>
+#include <chrono>
+#include <utility>
 #include "sources/source_manager.h"
 #include "audio/process_capture.h"
 #include "processing/opus_encoder.h"
@@ -64,11 +71,129 @@ namespace
         std::atomic<uint64_t> encodedPackets{ 0 };
         std::atomic<float> audioRms{ 0.0f };
 
+        std::mutex audioMutex;
+std::condition_variable audioCondition;
+std::deque<std::array<float, 2>> audioQueue;
+
+std::atomic<bool> publisherRunning{ false };
+std::thread publisherThread;
         bool connected = false;
         bool monitoringStarted = false;
     };
 
     AppState app;
+
+
+    void StopAudioPublisher()
+    {
+        app.publisherRunning.store(false);
+        app.audioCondition.notify_all();
+
+        if (app.publisherThread.joinable())
+            app.publisherThread.join();
+
+        {
+            std::lock_guard<std::mutex> lock(app.audioMutex);
+            app.audioQueue.clear();
+        }
+    }
+
+    void AudioPublishingLoop()
+    {
+        constexpr double RESAMPLE_STEP = 44100.0 / 48000.0;
+        //constexpr size_t MAX_QUEUE_FRAMES = 44100;
+
+        std::deque<std::array<float, 2>> input;
+        double position = 0.0;
+
+        while (app.publisherRunning.load())
+        {
+            {
+                std::unique_lock<std::mutex> lock(app.audioMutex);
+
+                app.audioCondition.wait_for(
+                    lock,
+                    std::chrono::milliseconds(20),
+                    []
+                    {
+                        return !app.audioQueue.empty() ||
+                            !app.publisherRunning.load();
+                    }
+                );
+
+                while (!app.audioQueue.empty())
+                {
+                    input.push_back(app.audioQueue.front());
+                    app.audioQueue.pop_front();
+                }
+            }
+
+            if (!app.publisherRunning.load())
+                break;
+
+            // Build one 10 ms, 48 kHz stereo frame.
+            std::vector<std::int16_t> output;
+            output.reserve(960);
+
+            while (output.size() < 960)
+            {
+                const size_t index =
+                    static_cast<size_t>(position);
+
+                if (index + 1 >= input.size())
+                    break;
+
+                const double fraction = position - index;
+
+                const auto& a = input[index];
+                const auto& b = input[index + 1];
+
+                for (int channel = 0; channel < 2; ++channel)
+                {
+                    const double sample =
+                        a[channel] +
+                        (b[channel] - a[channel]) * fraction;
+
+                    const double clamped =
+                        std::clamp(sample, -1.0, 1.0);
+
+                    output.push_back(
+                        static_cast<std::int16_t>(
+                            std::lrint(clamped * 32767.0)
+                        )
+                    );
+                }
+
+                position += RESAMPLE_STEP;
+            }
+
+            // Discard input samples that are no longer needed.
+            const size_t consumed =
+                static_cast<size_t>(position);
+
+            if (consumed > 0 && !input.empty())
+            {
+                const size_t removable =
+                   (std::min)(consumed, input.size() - 1);
+
+                for (size_t i = 0; i < removable; ++i)
+                    input.pop_front();
+
+                position -= removable;
+            }
+
+            if (output.size() == 960)
+            {
+                if (!app.broadcaster.publishAudioFrame(
+                    std::move(output)))
+                {
+                    // A failed frame is dropped; the next frame
+                    // can still be attempted.
+                }
+            }
+        }
+    }
+
 
     void SetControlFont(HWND control, HFONT font)
     {
@@ -328,7 +453,7 @@ namespace
 
             SetWindowTextW(
                 app.statusLabel,
-                L"ROOM CONNECTED - AUDIO NOT PUBLISHED"
+                L"ROOM CONNECTED - BROADCASTING"
             );
         }
         else
@@ -352,6 +477,7 @@ namespace
         if (app.connected)
         {
             app.capture.stop();
+            StopAudioPublisher();
             app.opusEncoder.reset();
             app.broadcaster.disconnect();
             app.connected = false;
@@ -448,6 +574,31 @@ namespace
             return;
         }
 
+        // Create and publish the LiveKit audio track.
+        if (!app.broadcaster.startAudioPublishing())
+        {
+            app.opusEncoder.reset();
+            app.broadcaster.disconnect();
+
+            MessageBoxW(
+                app.window,
+                L"Could not publish the LiveKit audio track.",
+                L"SASHA.FM",
+                MB_OK | MB_ICONERROR
+            );
+
+            return;
+        }
+
+        // Clear any leftover audio and start the publishing worker.
+        {
+            std::lock_guard<std::mutex> lock(app.audioMutex);
+            app.audioQueue.clear();
+        }
+
+        app.publisherRunning.store(true);
+        app.publisherThread = std::thread(AudioPublishingLoop);
+
         const bool started = app.capture.start(
             processId,
             [](const BYTE* data,
@@ -504,7 +655,24 @@ namespace
                 );
 
                 app.audioRms.store(rms, std::memory_order_relaxed);
+// Queue captured audio for the LiveKit publishing thread.
+{
+    std::lock_guard<std::mutex> lock(app.audioMutex);
 
+    for (UINT32 i = 0; i < frameCount; ++i)
+    {
+        // Keep the queue bounded to approximately one second.
+        if (app.audioQueue.size() >= 44100)
+            app.audioQueue.pop_front();
+
+        app.audioQueue.push_back({
+            samples[i * 2],
+            samples[i * 2 + 1]
+        });
+    }
+}
+
+app.audioCondition.notify_one();
                 // Encode captured audio into 20 ms Opus packets.
                 // The packet callback is synchronous, so packet data
                 // is consumed before the encoder's temporary buffer ends.
@@ -543,6 +711,7 @@ namespace
                 static_cast<unsigned int>(error)
             );
 
+            StopAudioPublisher();
             app.opusEncoder.reset();
             app.broadcaster.disconnect();
 
@@ -568,6 +737,7 @@ namespace
         if (!app.capture.isRunning())
         {
             app.capture.stop();
+            StopAudioPublisher();
             app.opusEncoder.reset();
             app.broadcaster.disconnect();
             app.connected = false;
@@ -717,6 +887,7 @@ namespace
             KillTimer(window, TIMER_REFRESH);
 
             app.capture.stop();
+            StopAudioPublisher();
             app.opusEncoder.reset();
             app.broadcaster.disconnect();
 
