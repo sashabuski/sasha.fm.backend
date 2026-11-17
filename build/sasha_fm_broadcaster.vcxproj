@@ -87,12 +87,14 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\include;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Users/sasha/source/repos/vcpkg/installed/x64-windows/include" /external:I "C:/Users/sasha/source/repos/vcpkg/installed/x64-windows/include/opus" /external:I "C:/Users/sasha/source/repos/desktop_music_player/sasha_fm_broadcaster/build/_deps/livekit-sdk/livekit-sdk-windows-x64-1.13.1/include"</AdditionalOptions>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <BufferSecurityCheck></BufferSecurityCheck>
       <CallingConvention></CallingConvention>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
       <FloatingPointModel></FloatingPointModel>
       <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
@@ -113,18 +115,41 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\include;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\include;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\include;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\include\opus;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\_deps\livekit-sdk\livekit-sdk-windows-x64-1.13.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\include;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\include;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\include;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\include\opus;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\_deps\livekit-sdk\livekit-sdk-windows-x64-1.13.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
       <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
+    <PostBuildEvent>
+      <Message>	</Message>
+      <Command>setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different C:/Users/sasha/source/repos/desktop_music_player/sasha_fm_broadcaster/build/_deps/livekit-sdk/livekit-sdk-windows-x64-1.13.1/bin/livekit.dll C:/Users/sasha/source/repos/desktop_music_player/sasha_fm_broadcaster/build/Debug
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different C:/Users/sasha/source/repos/desktop_music_player/sasha_fm_broadcaster/build/_deps/livekit-sdk/livekit-sdk-windows-x64-1.13.1/bin/livekit_ffi.dll C:/Users/sasha/source/repos/desktop_music_player/sasha_fm_broadcaster/build/Debug
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different C:/Users/sasha/source/repos/vcpkg/installed/x64-windows/debug/bin/opus.dll C:/Users/sasha/source/repos/desktop_music_player/sasha_fm_broadcaster/build/Debug
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
     <Link>
-      <AdditionalDependencies>ole32.lib;uuid.lib;propsys.lib;user32.lib;gdi32.lib;comctl32.lib;Mmdevapi.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>ole32.lib;uuid.lib;propsys.lib;user32.lib;gdi32.lib;comctl32.lib;Mmdevapi.lib;winhttp.lib;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\debug\lib\opus.lib;_deps\livekit-sdk\livekit-sdk-windows-x64-1.13.1\lib\livekit.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <DataExecutionPrevention></DataExecutionPrevention>
@@ -144,11 +169,13 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\include;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Users/sasha/source/repos/vcpkg/installed/x64-windows/include" /external:I "C:/Users/sasha/source/repos/vcpkg/installed/x64-windows/include/opus" /external:I "C:/Users/sasha/source/repos/desktop_music_player/sasha_fm_broadcaster/build/_deps/livekit-sdk/livekit-sdk-windows-x64-1.13.1/include"</AdditionalOptions>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <BufferSecurityCheck></BufferSecurityCheck>
       <CallingConvention></CallingConvention>
       <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
       <FloatingPointModel></FloatingPointModel>
       <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
@@ -171,18 +198,41 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\include;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\include;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\include;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\include\opus;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\_deps\livekit-sdk\livekit-sdk-windows-x64-1.13.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\include;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\include;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\include;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\include\opus;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\_deps\livekit-sdk\livekit-sdk-windows-x64-1.13.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
       <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
+    <PostBuildEvent>
+      <Message>	</Message>
+      <Command>setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different C:/Users/sasha/source/repos/desktop_music_player/sasha_fm_broadcaster/build/_deps/livekit-sdk/livekit-sdk-windows-x64-1.13.1/bin/livekit.dll C:/Users/sasha/source/repos/desktop_music_player/sasha_fm_broadcaster/build/Release
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different C:/Users/sasha/source/repos/desktop_music_player/sasha_fm_broadcaster/build/_deps/livekit-sdk/livekit-sdk-windows-x64-1.13.1/bin/livekit_ffi.dll C:/Users/sasha/source/repos/desktop_music_player/sasha_fm_broadcaster/build/Release
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different C:/Users/sasha/source/repos/vcpkg/installed/x64-windows/bin/opus.dll C:/Users/sasha/source/repos/desktop_music_player/sasha_fm_broadcaster/build/Release
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
     <Link>
-      <AdditionalDependencies>ole32.lib;uuid.lib;propsys.lib;user32.lib;gdi32.lib;comctl32.lib;Mmdevapi.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>ole32.lib;uuid.lib;propsys.lib;user32.lib;gdi32.lib;comctl32.lib;Mmdevapi.lib;winhttp.lib;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\lib\opus.lib;_deps\livekit-sdk\livekit-sdk-windows-x64-1.13.1\lib\livekit.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <DataExecutionPrevention></DataExecutionPrevention>
@@ -202,11 +252,13 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\include;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Users/sasha/source/repos/vcpkg/installed/x64-windows/include" /external:I "C:/Users/sasha/source/repos/vcpkg/installed/x64-windows/include/opus" /external:I "C:/Users/sasha/source/repos/desktop_music_player/sasha_fm_broadcaster/build/_deps/livekit-sdk/livekit-sdk-windows-x64-1.13.1/include"</AdditionalOptions>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <BufferSecurityCheck></BufferSecurityCheck>
       <CallingConvention></CallingConvention>
       <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
       <FloatingPointModel></FloatingPointModel>
       <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
@@ -229,18 +281,41 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"MinSizeRel\"</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\include;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\include;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\include;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\include\opus;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\_deps\livekit-sdk\livekit-sdk-windows-x64-1.13.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\include;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\include;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\include;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\include\opus;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\_deps\livekit-sdk\livekit-sdk-windows-x64-1.13.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
       <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
+    <PostBuildEvent>
+      <Message>	</Message>
+      <Command>setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different C:/Users/sasha/source/repos/desktop_music_player/sasha_fm_broadcaster/build/_deps/livekit-sdk/livekit-sdk-windows-x64-1.13.1/bin/livekit.dll C:/Users/sasha/source/repos/desktop_music_player/sasha_fm_broadcaster/build/MinSizeRel
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different C:/Users/sasha/source/repos/desktop_music_player/sasha_fm_broadcaster/build/_deps/livekit-sdk/livekit-sdk-windows-x64-1.13.1/bin/livekit_ffi.dll C:/Users/sasha/source/repos/desktop_music_player/sasha_fm_broadcaster/build/MinSizeRel
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different C:/Users/sasha/source/repos/vcpkg/installed/x64-windows/bin/opus.dll C:/Users/sasha/source/repos/desktop_music_player/sasha_fm_broadcaster/build/MinSizeRel
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
     <Link>
-      <AdditionalDependencies>ole32.lib;uuid.lib;propsys.lib;user32.lib;gdi32.lib;comctl32.lib;Mmdevapi.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>ole32.lib;uuid.lib;propsys.lib;user32.lib;gdi32.lib;comctl32.lib;Mmdevapi.lib;winhttp.lib;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\debug\lib\opus.lib;_deps\livekit-sdk\livekit-sdk-windows-x64-1.13.1\lib\livekit.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <DataExecutionPrevention></DataExecutionPrevention>
@@ -260,12 +335,14 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\include;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Users/sasha/source/repos/vcpkg/installed/x64-windows/include" /external:I "C:/Users/sasha/source/repos/vcpkg/installed/x64-windows/include/opus" /external:I "C:/Users/sasha/source/repos/desktop_music_player/sasha_fm_broadcaster/build/_deps/livekit-sdk/livekit-sdk-windows-x64-1.13.1/include"</AdditionalOptions>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <BufferSecurityCheck></BufferSecurityCheck>
       <CallingConvention></CallingConvention>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
       <FloatingPointModel></FloatingPointModel>
       <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
@@ -286,18 +363,41 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"RelWithDebInfo\"</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\include;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\include;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\include;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\include\opus;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\_deps\livekit-sdk\livekit-sdk-windows-x64-1.13.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\include;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\include;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\include;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\include\opus;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\_deps\livekit-sdk\livekit-sdk-windows-x64-1.13.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
       <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
+    <PostBuildEvent>
+      <Message>	</Message>
+      <Command>setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different C:/Users/sasha/source/repos/desktop_music_player/sasha_fm_broadcaster/build/_deps/livekit-sdk/livekit-sdk-windows-x64-1.13.1/bin/livekit.dll C:/Users/sasha/source/repos/desktop_music_player/sasha_fm_broadcaster/build/RelWithDebInfo
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different C:/Users/sasha/source/repos/desktop_music_player/sasha_fm_broadcaster/build/_deps/livekit-sdk/livekit-sdk-windows-x64-1.13.1/bin/livekit_ffi.dll C:/Users/sasha/source/repos/desktop_music_player/sasha_fm_broadcaster/build/RelWithDebInfo
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different C:/Users/sasha/source/repos/vcpkg/installed/x64-windows/bin/opus.dll C:/Users/sasha/source/repos/desktop_music_player/sasha_fm_broadcaster/build/RelWithDebInfo
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
     <Link>
-      <AdditionalDependencies>ole32.lib;uuid.lib;propsys.lib;user32.lib;gdi32.lib;comctl32.lib;Mmdevapi.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>ole32.lib;uuid.lib;propsys.lib;user32.lib;gdi32.lib;comctl32.lib;Mmdevapi.lib;winhttp.lib;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\debug\lib\opus.lib;_deps\livekit-sdk\livekit-sdk-windows-x64-1.13.1\lib\livekit.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <DataExecutionPrevention></DataExecutionPrevention>
@@ -327,7 +427,7 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Compiler\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Internal\CMakeCXXLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Linker\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Linker\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows-Initialize.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\WindowsPaths.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\CMakeFiles\4.4.4\CMakeCXXCompiler.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\CMakeFiles\4.4.4\CMakeRCCompiler.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\CMakeFiles\4.4.4\CMakeSystem.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Compiler\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Internal\CMakeCXXLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Linker\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Linker\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows-Initialize.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\WindowsPaths.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\CMakeFiles\4.4.4\CMakeCXXCompiler.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\CMakeFiles\4.4.4\CMakeRCCompiler.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\CMakeFiles\4.4.4\CMakeSystem.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\_deps\livekit-sdk\livekit-sdk-windows-x64-1.13.1\lib\cmake\LiveKit\LiveKitConfig.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\_deps\livekit-sdk\livekit-sdk-windows-x64-1.13.1\lib\cmake\LiveKit\LiveKitConfigVersion.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\_deps\livekit-sdk\livekit-sdk-windows-x64-1.13.1\lib\cmake\LiveKit\LiveKitTargets-release.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\_deps\livekit-sdk\livekit-sdk-windows-x64-1.13.1\lib\cmake\LiveKit\LiveKitTargets.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\cmake\LiveKitSDK.cmake;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\share\nlohmann_json\nlohmann_jsonConfig.cmake;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\share\nlohmann_json\nlohmann_jsonConfigVersion.cmake;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\share\nlohmann_json\nlohmann_jsonTargets.cmake;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\share\opus\OpusConfig.cmake;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\share\opus\OpusConfigVersion.cmake;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\share\opus\OpusTargets-debug.cmake;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\share\opus\OpusTargets-release.cmake;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\share\opus\OpusTargets.cmake;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/Users/sasha/source/repos/desktop_music_player/sasha_fm_broadcaster/CMakeLists.txt</Message>
@@ -340,7 +440,7 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Compiler\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Internal\CMakeCXXLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Linker\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Linker\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows-Initialize.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\WindowsPaths.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\CMakeFiles\4.4.4\CMakeCXXCompiler.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\CMakeFiles\4.4.4\CMakeRCCompiler.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\CMakeFiles\4.4.4\CMakeSystem.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Compiler\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Internal\CMakeCXXLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Linker\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Linker\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows-Initialize.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\WindowsPaths.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\CMakeFiles\4.4.4\CMakeCXXCompiler.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\CMakeFiles\4.4.4\CMakeRCCompiler.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\CMakeFiles\4.4.4\CMakeSystem.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\_deps\livekit-sdk\livekit-sdk-windows-x64-1.13.1\lib\cmake\LiveKit\LiveKitConfig.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\_deps\livekit-sdk\livekit-sdk-windows-x64-1.13.1\lib\cmake\LiveKit\LiveKitConfigVersion.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\_deps\livekit-sdk\livekit-sdk-windows-x64-1.13.1\lib\cmake\LiveKit\LiveKitTargets-release.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\_deps\livekit-sdk\livekit-sdk-windows-x64-1.13.1\lib\cmake\LiveKit\LiveKitTargets.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\cmake\LiveKitSDK.cmake;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\share\nlohmann_json\nlohmann_jsonConfig.cmake;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\share\nlohmann_json\nlohmann_jsonConfigVersion.cmake;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\share\nlohmann_json\nlohmann_jsonTargets.cmake;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\share\opus\OpusConfig.cmake;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\share\opus\OpusConfigVersion.cmake;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\share\opus\OpusTargets-debug.cmake;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\share\opus\OpusTargets-release.cmake;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\share\opus\OpusTargets.cmake;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
       <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule C:/Users/sasha/source/repos/desktop_music_player/sasha_fm_broadcaster/CMakeLists.txt</Message>
@@ -353,7 +453,7 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Compiler\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Internal\CMakeCXXLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Linker\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Linker\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows-Initialize.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\WindowsPaths.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\CMakeFiles\4.4.4\CMakeCXXCompiler.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\CMakeFiles\4.4.4\CMakeRCCompiler.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\CMakeFiles\4.4.4\CMakeSystem.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Compiler\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Internal\CMakeCXXLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Linker\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Linker\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows-Initialize.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\WindowsPaths.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\CMakeFiles\4.4.4\CMakeCXXCompiler.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\CMakeFiles\4.4.4\CMakeRCCompiler.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\CMakeFiles\4.4.4\CMakeSystem.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\_deps\livekit-sdk\livekit-sdk-windows-x64-1.13.1\lib\cmake\LiveKit\LiveKitConfig.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\_deps\livekit-sdk\livekit-sdk-windows-x64-1.13.1\lib\cmake\LiveKit\LiveKitConfigVersion.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\_deps\livekit-sdk\livekit-sdk-windows-x64-1.13.1\lib\cmake\LiveKit\LiveKitTargets-release.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\_deps\livekit-sdk\livekit-sdk-windows-x64-1.13.1\lib\cmake\LiveKit\LiveKitTargets.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\cmake\LiveKitSDK.cmake;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\share\nlohmann_json\nlohmann_jsonConfig.cmake;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\share\nlohmann_json\nlohmann_jsonConfigVersion.cmake;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\share\nlohmann_json\nlohmann_jsonTargets.cmake;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\share\opus\OpusConfig.cmake;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\share\opus\OpusConfigVersion.cmake;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\share\opus\OpusTargets-debug.cmake;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\share\opus\OpusTargets-release.cmake;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\share\opus\OpusTargets.cmake;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
       <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule C:/Users/sasha/source/repos/desktop_music_player/sasha_fm_broadcaster/CMakeLists.txt</Message>
@@ -366,7 +466,7 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Compiler\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Internal\CMakeCXXLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Linker\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Linker\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows-Initialize.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\WindowsPaths.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\CMakeFiles\4.4.4\CMakeCXXCompiler.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\CMakeFiles\4.4.4\CMakeRCCompiler.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\CMakeFiles\4.4.4\CMakeSystem.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Compiler\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Internal\CMakeCXXLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Linker\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Linker\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows-Initialize.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\WindowsPaths.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\CMakeFiles\4.4.4\CMakeCXXCompiler.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\CMakeFiles\4.4.4\CMakeRCCompiler.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\CMakeFiles\4.4.4\CMakeSystem.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\_deps\livekit-sdk\livekit-sdk-windows-x64-1.13.1\lib\cmake\LiveKit\LiveKitConfig.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\_deps\livekit-sdk\livekit-sdk-windows-x64-1.13.1\lib\cmake\LiveKit\LiveKitConfigVersion.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\_deps\livekit-sdk\livekit-sdk-windows-x64-1.13.1\lib\cmake\LiveKit\LiveKitTargets-release.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\_deps\livekit-sdk\livekit-sdk-windows-x64-1.13.1\lib\cmake\LiveKit\LiveKitTargets.cmake;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\cmake\LiveKitSDK.cmake;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\share\nlohmann_json\nlohmann_jsonConfig.cmake;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\share\nlohmann_json\nlohmann_jsonConfigVersion.cmake;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\share\nlohmann_json\nlohmann_jsonTargets.cmake;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\share\opus\OpusConfig.cmake;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\share\opus\OpusConfigVersion.cmake;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\share\opus\OpusTargets-debug.cmake;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\share\opus\OpusTargets-release.cmake;C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\share\opus\OpusTargets.cmake;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
     </CustomBuild>
@@ -377,7 +477,10 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src\audio\process_capture.cpp" />
     <ClCompile Include="C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src\sources\source_manager.cpp" />
     <ClCompile Include="C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src\processing\audio_processor.cpp" />
+    <ClCompile Include="C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src\processing\opus_encoder.cpp" />
     <ClCompile Include="C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src\streaming\broadcaster.cpp" />
+    <Natvis Include="C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\share\nlohmann_json\nlohmann_json.natvis">
+    </Natvis>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

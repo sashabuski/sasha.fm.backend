@@ -13,6 +13,8 @@
 
 #include "sources/source_manager.h"
 #include "audio/process_capture.h"
+#include "processing/opus_encoder.h"
+#include "streaming/broadcaster.h"
 
 namespace
 {
@@ -37,6 +39,8 @@ namespace
     {
         SashaFM::SourceManager sourceManager;
         SashaFM::ProcessCapture capture;
+        SashaFM::OpusEncoder opusEncoder;
+        SashaFM::Broadcaster broadcaster;
 
         HWND window = nullptr;
         HWND titleLabel = nullptr;
@@ -57,6 +61,7 @@ namespace
         std::vector<SourceChoice> choices;
 
         std::atomic<uint64_t> capturedFrames{ 0 };
+        std::atomic<uint64_t> encodedPackets{ 0 };
         std::atomic<float> audioRms{ 0.0f };
 
         bool connected = false;
@@ -187,7 +192,7 @@ namespace
             L"STATIC",
             L"NOT BROADCASTING",
             WS_CHILD | WS_VISIBLE,
-            53, 332, 300, 22,
+            53, 332, 350, 22,
             window, nullptr, nullptr, nullptr
         );
 
@@ -323,7 +328,7 @@ namespace
 
             SetWindowTextW(
                 app.statusLabel,
-                L"CAPTURE STARTED - WAITING FOR AUDIO"
+                L"ROOM CONNECTED - AUDIO NOT PUBLISHED"
             );
         }
         else
@@ -347,6 +352,8 @@ namespace
         if (app.connected)
         {
             app.capture.stop();
+            app.opusEncoder.reset();
+            app.broadcaster.disconnect();
             app.connected = false;
 
             UpdateConnectionUI();
@@ -411,7 +418,35 @@ namespace
         }
 
         app.capturedFrames = 0;
+        app.encodedPackets = 0;
         app.audioRms = 0.0f;
+
+        if (!app.opusEncoder.initialize(44100, 2, 128000))
+        {
+            MessageBoxW(
+                app.window,
+                L"Could not initialise the Opus encoder.",
+                L"SASHA.FM",
+                MB_OK | MB_ICONERROR
+            );
+            return;
+        }
+
+        // Connect to the LiveKit room using a token from the local Node.js server.
+        if (!app.broadcaster.connectToTokenServer())
+        {
+            app.opusEncoder.reset();
+
+            MessageBoxW(
+                app.window,
+                L"Could not connect to LiveKit.\n\n"
+                L"Make sure the SASHA.FM token server is running.",
+                L"SASHA.FM",
+                MB_OK | MB_ICONERROR
+            );
+
+            return;
+        }
 
         const bool started = app.capture.start(
             processId,
@@ -427,20 +462,34 @@ namespace
                     std::memory_order_relaxed
                 );
 
-                if (!data ||
-                    format.wFormatTag != WAVE_FORMAT_IEEE_FLOAT ||
+                // This encoder is currently configured for 44.1 kHz,
+                // stereo, 32-bit floating-point capture.
+                if (format.wFormatTag != WAVE_FORMAT_IEEE_FLOAT ||
                     format.wBitsPerSample != 32 ||
-                    format.nChannels == 0)
+                    format.nChannels != 2 ||
+                    format.nSamplesPerSec != 44100)
                 {
                     app.audioRms.store(0.0f, std::memory_order_relaxed);
                     return;
                 }
 
-                const float* samples =
-                    reinterpret_cast<const float*>(data);
-
                 const size_t sampleCount =
                     static_cast<size_t>(frameCount) * format.nChannels;
+
+                // WASAPI can mark a packet as silent and provide a null
+                // data pointer. Feed actual zero samples to the encoder.
+                std::vector<float> silence;
+                const float* samples = nullptr;
+
+                if (data)
+                {
+                    samples = reinterpret_cast<const float*>(data);
+                }
+                else
+                {
+                    silence.assign(sampleCount, 0.0f);
+                    samples = silence.data();
+                }
 
                 double sumSquares = 0.0;
 
@@ -455,6 +504,30 @@ namespace
                 );
 
                 app.audioRms.store(rms, std::memory_order_relaxed);
+
+                // Encode captured audio into 20 ms Opus packets.
+                // The packet callback is synchronous, so packet data
+                // is consumed before the encoder's temporary buffer ends.
+                const bool encoded = app.opusEncoder.process(
+                    samples,
+                    frameCount,
+                    [](const unsigned char* packet, int packetSize)
+                    {
+                        if (packet && packetSize > 0)
+                        {
+                            app.encodedPackets.fetch_add(
+                                1,
+                                std::memory_order_relaxed
+                            );
+                        }
+                    }
+                );
+
+                if (!encoded)
+                {
+                    // A later UI update will still show the last valid
+                    // audio level; the packet counter will stop advancing.
+                }
             }
         );
 
@@ -469,6 +542,9 @@ namespace
                 L"Could not start audio capture.\n\nError code: 0x%08X",
                 static_cast<unsigned int>(error)
             );
+
+            app.opusEncoder.reset();
+            app.broadcaster.disconnect();
 
             MessageBoxW(
                 app.window,
@@ -492,6 +568,8 @@ namespace
         if (!app.capture.isRunning())
         {
             app.capture.stop();
+            app.opusEncoder.reset();
+            app.broadcaster.disconnect();
             app.connected = false;
 
             SetWindowTextW(
@@ -515,6 +593,11 @@ namespace
 
             wchar_t status[128];
 
+            const unsigned long long packetCount =
+                static_cast<unsigned long long>(
+                    app.encodedPackets.load(std::memory_order_relaxed)
+                );
+
             if (rms > 0.00001f)
             {
                 const double db = 20.0 * std::log10(rms);
@@ -522,16 +605,18 @@ namespace
                 swprintf_s(
                     status,
                     _countof(status),
-                    L"AUDIO LEVEL: %.1f dBFS",
-                    db
+                    L"%.1f dBFS  |  OPUS: %llu",
+                    db,
+                    packetCount
                 );
             }
             else
             {
-                wcscpy_s(
+                swprintf_s(
                     status,
                     _countof(status),
-                    L"RECEIVING AUDIO: SILENT"
+                    L"SILENT  |  OPUS: %llu",
+                    packetCount
                 );
             }
 
@@ -632,6 +717,8 @@ namespace
             KillTimer(window, TIMER_REFRESH);
 
             app.capture.stop();
+            app.opusEncoder.reset();
+            app.broadcaster.disconnect();
 
             if (app.monitoringStarted)
                 app.sourceManager.stopMonitoring();

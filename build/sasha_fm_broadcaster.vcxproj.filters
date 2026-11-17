@@ -16,12 +16,18 @@
     <ClCompile Include="C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src\processing\audio_processor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src\processing\opus_encoder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src\streaming\broadcaster.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="C:\Users\sasha\source\repos\vcpkg\installed\x64-windows\share\nlohmann_json\nlohmann_json.natvis" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
