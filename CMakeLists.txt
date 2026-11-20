@@ -32,7 +32,7 @@ add_executable(sasha_fm_broadcaster WIN32
 
     src/audio/wasapi_capture.cpp
     src/audio/process_capture.cpp
-
+        src/audio/audio_analyser.cpp
     src/sources/source_manager.cpp
 
     src/processing/audio_processor.cpp

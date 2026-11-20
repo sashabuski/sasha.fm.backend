@@ -10,6 +10,9 @@
 
 #include <nlohmann/json.hpp>
 
+#include <algorithm>
+#include <cmath>
+#include <cstdint>
 #include <exception>
 #include <iostream>
 #include <memory>
@@ -360,6 +363,56 @@ namespace SashaFM
         {
             std::cerr << "Could not publish audio frame: "
                       << error.what() << '\n';
+            return false;
+        }
+    }
+
+    bool Broadcaster::publishEqualiserData(
+        const std::array<float, 32>& bands
+    )
+    {
+        if (!connected_ || !room_)
+            return false;
+
+        try
+        {
+            auto participant = room_->localParticipant().lock();
+
+            if (!participant)
+                return false;
+
+            std::vector<std::uint8_t> payload;
+            payload.reserve(bands.size());
+
+            for (const float band : bands)
+            {
+                const float clamped = std::clamp(
+                    band,
+                    0.0f,
+                    1.0f
+                );
+
+                payload.push_back(
+                    static_cast<std::uint8_t>(
+                        std::lround(clamped * 255.0f)
+                    )
+                );
+            }
+
+            participant->publishData(
+                payload,
+                false,
+                {},
+                "sasha-fm-equaliser"
+            );
+
+            return true;
+        }
+        catch (const std::exception& error)
+        {
+            std::cerr << "Could not publish equaliser data: "
+                      << error.what() << '\n';
+
             return false;
         }
     }

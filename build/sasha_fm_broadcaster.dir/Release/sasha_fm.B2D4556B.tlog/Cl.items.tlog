@@ -1,6 +1,7 @@
 C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\main.cpp;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\sasha_fm_broadcaster.dir\Release\main.obj
 C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src\audio\wasapi_capture.cpp;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\sasha_fm_broadcaster.dir\Release\wasapi_capture.obj
 C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src\audio\process_capture.cpp;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\sasha_fm_broadcaster.dir\Release\process_capture.obj
+C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src\audio\audio_analyser.cpp;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\sasha_fm_broadcaster.dir\Release\audio_analyser.obj
 C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src\sources\source_manager.cpp;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\sasha_fm_broadcaster.dir\Release\source_manager.obj
 C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src\processing\audio_processor.cpp;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\sasha_fm_broadcaster.dir\Release\audio_processor.obj
 C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src\processing\opus_encoder.cpp;C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\build\sasha_fm_broadcaster.dir\Release\opus_encoder.obj

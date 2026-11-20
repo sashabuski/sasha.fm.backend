@@ -22,7 +22,7 @@
 #include "audio/process_capture.h"
 #include "processing/opus_encoder.h"
 #include "streaming/broadcaster.h"
-
+#include "audio/audio_analyser.h"
 namespace
 {
     constexpr int ID_SOURCE_COMBO = 1001;
@@ -48,7 +48,9 @@ namespace
         SashaFM::ProcessCapture capture;
         SashaFM::OpusEncoder opusEncoder;
         SashaFM::Broadcaster broadcaster;
-
+        SashaFM::AudioAnalyser audioAnalyser;
+std::mutex analyserMutex;
+SashaFM::AudioAnalyser::Bands latestBands{};
         HWND window = nullptr;
         HWND titleLabel = nullptr;
         HWND subtitleLabel = nullptr;
@@ -183,14 +185,52 @@ std::thread publisherThread;
             }
 
             if (output.size() == 960)
-            {
-                if (!app.broadcaster.publishAudioFrame(
-                    std::move(output)))
-                {
-                    // A failed frame is dropped; the next frame
-                    // can still be attempted.
-                }
-            }
+{
+    // Convert the 48 kHz stereo PCM frame back to float.
+    std::array<float, 960> analysisSamples{};
+
+    for (std::size_t i = 0; i < output.size(); ++i)
+    {
+        analysisSamples[i] =
+            static_cast<float>(output[i]) / 32768.0f;
+    }
+
+    // Analyse the audio.
+    app.audioAnalyser.addSamples(
+        analysisSamples.data(),
+        analysisSamples.size()
+    );
+
+    // Store the latest 32 frequency levels.
+    {
+        std::lock_guard<std::mutex> lock(app.analyserMutex);
+        app.latestBands = app.audioAnalyser.getBands();
+    }
+
+    // Send equaliser updates approximately 30 times per second.
+    static unsigned int equaliserFrameCounter = 0;
+
+    if (++equaliserFrameCounter >= 3)
+    {
+        equaliserFrameCounter = 0;
+
+        SashaFM::AudioAnalyser::Bands bandsToPublish{};
+
+        {
+            std::lock_guard<std::mutex> lock(app.analyserMutex);
+            bandsToPublish = app.latestBands;
+        }
+
+        app.broadcaster.publishEqualiserData(bandsToPublish);
+    }
+
+    // Publish the original audio frame.
+    if (!app.broadcaster.publishAudioFrame(
+        std::move(output)))
+    {
+        // A failed frame is dropped.
+    }
+}
         }
     }
 

@@ -1,9 +1,11 @@
 
 #pragma once
 
+#include <cstdint>
 #include <memory>
 #include <string>
 #include <vector>
+#include <array>
 
 #include <livekit/room.h>
 #include <livekit/audio_source.h>
@@ -31,6 +33,9 @@ namespace SashaFM
 
         // Submit one 10 ms frame of 48 kHz stereo PCM audio.
         bool publishAudioFrame(std::vector<std::int16_t> samples);
+
+        // Publish 32 equaliser frequency levels to LiveKit.
+        bool publishEqualiserData(const std::array<float, 32>& bands);
 
         void stopAudioPublishing();
         void disconnect();

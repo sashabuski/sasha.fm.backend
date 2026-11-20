@@ -10,6 +10,9 @@
     <ClCompile Include="C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src\audio\process_capture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src\audio\audio_analyser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="C:\Users\sasha\source\repos\desktop_music_player\sasha_fm_broadcaster\src\sources\source_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
